@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 
 import Header from './components/Header.jsx';
 import { useAuth } from './context/AuthContext.jsx';
+import AddCampaign from './pages/AddCampaign.jsx';
+import CampaignPreview from './pages/CampaignPreview.jsx';
 import Campaigns from './pages/Campaigns.jsx';
 import Contact from './pages/Contact.jsx';
 import Help from './pages/Help.jsx';
@@ -25,6 +27,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/campaigns" element={<Campaigns />} />
+          <Route path="/campaigns/new" element={<AddCampaign />} />
+          <Route path="/campaigns/preview/:slug" element={<CampaignPreview />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
