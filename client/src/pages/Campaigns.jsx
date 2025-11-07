@@ -1,46 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 
-import { apiClient } from '../api/client.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useCampaigns } from '../context/CampaignsContext.jsx';
 
 export default function Campaigns() {
-  const { token, isAuthenticated, loading } = useAuth();
-  const [campaigns, setCampaigns] = useState([]);
-  const [isFetching, setIsFetching] = useState(true);
-  const [error, setError] = useState(null);
+  const { isAuthenticated, loading } = useAuth();
+  const { campaigns } = useCampaigns();
+  const location = useLocation();
 
-  useEffect(() => {
-    if (!token) {
-      setIsFetching(false);
-      return;
-    }
-
-    let isMounted = true;
-    setIsFetching(true);
-    setError(null);
-
-    apiClient('/campaigns', { token })
-      .then((data) => {
-        if (isMounted) {
-          setCampaigns(data.campaigns || []);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          setError(err.message || 'Unable to load campaigns');
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          setIsFetching(false);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [token]);
+  const highlightSlug = location.state?.highlightSlug || null;
+  const previewBaseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
   if (!loading && !isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -48,23 +17,93 @@ export default function Campaigns() {
 
   return (
     <section className="page">
-      <h1>Your Campaigns</h1>
-      <p>Track momentum across every initiative and keep your supporters informed.</p>
-      {isFetching ? (
-        <p>Loading campaigns…</p>
-      ) : error ? (
-        <p className="form-error">{error}</p>
-      ) : campaigns.length === 0 ? (
-        <p>You have no campaigns yet. Launch your first initiative to see it here.</p>
+      <header className="page-header">
+        <div>
+          <h1>Your Campaign Landing Pages</h1>
+          <p>
+            Manage the URLs and popups a visitor experiences when they land on your campaign link. Use the preview link
+            to test each flow.
+          </p>
+        </div>
+        <Link to="/campaigns/new" className="button">
+          Add campaign
+        </Link>
+      </header>
+
+      {campaigns.length === 0 ? (
+        <div className="empty-state">
+          <p>You have no campaigns yet. Create your first landing flow to activate the preview experience.</p>
+          <Link to="/campaigns/new" className="button secondary">
+            Create campaign
+          </Link>
+        </div>
       ) : (
-        <div className="grid">
+        <div className="campaigns-table" role="list">
           {campaigns.map((campaign) => (
-            <article key={campaign.id} className="card">
-              <h2>{campaign.name}</h2>
-              <p>{campaign.description}</p>
-              <p className="campaign-status">
-                <strong>Status:</strong> {campaign.status}
-              </p>
+            <article
+              key={campaign.id}
+              role="listitem"
+              className={`campaign-row${campaign.slug === highlightSlug ? ' is-highlighted' : ''}`}
+            >
+              <div className="campaign-row__main">
+                <h2>{campaign.name}</h2>
+                <p className="campaign-row__meta">
+                  <span className="campaign-row__slug">Slug: {campaign.slug}</span>
+                  <span>Delay popup: {campaign.delayPopupWaitSeconds ?? 15}s</span>
+                </p>
+                <dl className="campaign-row__details">
+                  <div>
+                    <dt>Squeeze Page</dt>
+                    <dd>
+                      <a href={campaign.squeezePageUrl} target="_blank" rel="noopener noreferrer">
+                        {campaign.squeezePageUrl}
+                      </a>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Delay Popup</dt>
+                    <dd>
+                      <a href={campaign.delayPopupUrl} target="_blank" rel="noopener noreferrer">
+                        {campaign.delayPopupUrl}
+                      </a>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>After Delay Popup</dt>
+                    <dd>
+                      <a href={campaign.urlAfterDelayPopupCloses} target="_blank" rel="noopener noreferrer">
+                        {campaign.urlAfterDelayPopupCloses}
+                      </a>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Exit Popup</dt>
+                    <dd>
+                      <a href={campaign.exitPopupUrl} target="_blank" rel="noopener noreferrer">
+                        {campaign.exitPopupUrl}
+                      </a>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>After Exit Popup</dt>
+                    <dd>
+                      <a href={campaign.urlAfterExitPopupCloses} target="_blank" rel="noopener noreferrer">
+                        {campaign.urlAfterExitPopupCloses}
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+              <div className="campaign-row__actions">
+                <span className="campaign-row__title">{campaign.pageTitle}</span>
+                <Link to={`/campaigns/preview/${campaign.slug}`} className="button secondary">
+                  Preview flow
+                </Link>
+                <div className="campaign-row__preview-url">
+                  <span>Preview URL</span>
+                  <code>{`${previewBaseUrl}/campaigns/preview/${campaign.slug}`}</code>
+                </div>
+              </div>
             </article>
           ))}
         </div>
