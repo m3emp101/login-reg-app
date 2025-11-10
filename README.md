@@ -40,7 +40,7 @@ npm install
 npm run dev
 ```
 
-Vite serves the React app at `http://localhost:3000`. The client reads API settings from `VITE_API_BASE_URL` (defaults to `http://localhost:4000/api`).
+Vite serves the React app at `http://localhost:5173`. The client reads API settings from `VITE_API_BASE_URL` (defaults to `http://localhost:4000/api`).
 
 ## Usage
 
@@ -73,4 +73,4 @@ cd server && npm run dev
 cd client && npm run dev
 ```
 
-Then visit `http://localhost:3000`, register a user, and explore the campaigns section.
+Then visit `http://localhost:5173`, register a user, and explore the campaigns section.

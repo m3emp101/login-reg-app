@@ -28,9 +28,6 @@ export default function Header() {
               <NavLink to="/campaigns" className={navLinkClassName}>
                 Campaigns
               </NavLink>
-              <NavLink to="/campaigns/new" className={navLinkClassName}>
-                Add Campaign
-              </NavLink>
               <button
                 type="button"
                 className="link-button"
