@@ -288,6 +288,68 @@
   min-width: 240px;
 }
 
+.campaign-row__quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1d4ed8;
+}
+
+.campaign-row__quick-actions a,
+.campaign-row__quick-actions button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.campaign-row__quick-actions a:hover,
+.campaign-row__quick-actions button:hover,
+.campaign-row__quick-actions a:focus-visible,
+.campaign-row__quick-actions button:focus-visible {
+  color: #2563eb;
+}
+
+.campaign-row__quick-actions button {
+  font: inherit;
+}
+
+.campaign-row__quick-actions > * {
+  position: relative;
+  padding-right: 0.75rem;
+}
+
+.campaign-row__quick-actions > *:not(:first-child) {
+  padding-left: 0.75rem;
+}
+
+.campaign-row__quick-actions > *:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 1.5em;
+  background: rgba(100, 116, 139, 0.4);
+}
+
+.campaign-row__copy-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.campaign-row__copy-status.is-error {
+  color: #dc2626;
+}
+
 .campaign-row__title {
   font-weight: 600;
   color: #0f172a;
